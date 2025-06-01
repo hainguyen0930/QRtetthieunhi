@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Lời chúc & icon responsive căn giữa - chậm hơn</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+  }
+
+  .container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Lời chúc */
+  .wish {
+    position: absolute;
+    font-weight: 700;
+    font-size: clamp(12px, 2vw, 24px);
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    color: white;
+    text-shadow: 0 0 4px rgba(255,255,255,0.9);
+    will-change: transform, opacity;
+    opacity: 0.95;
+  }
+
+  /* Icon */
+  .icon {
+    position: absolute;
+    font-size: clamp(16px, 3vw, 32px);
+    user-select: none;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: jump 1.2s ease-in-out infinite alternate;
+    opacity: 0.9;
+  }
+
+  @keyframes jump {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+  }
+
+  /* Responsive cho điện thoại: căn giữa lời chúc */
+  @media screen and (max-width: 480px) {
+    .wish.centered {
+      left: 50% !important;
+      transform: translateX(-50%);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container" aria-label="Icon và lời chúc bay riêng biệt"></div>
+
+<script>
+  const wishes = [
+    "Chúc mừng ngày Quốc tế Thiếu nhi 1/6!",
+    "Chúc cạu luôn vui vẻ, khỏe mạnh!",
+    "Ngày 1/6 thật rực rỡ và ý nghĩa!",
+    "Vui chơi hết mình, học hành chăm ngoan!",
+    "Chúc ngày 1/6 thật nhiều niềm vui!",
+    "Hạnh phúc, sức khỏe và tiếng cười ngập tràn!",
+    "Chúc cạu ăn cức 123",
+    "Chúc cạu ăn no ngủ kĩ",
+    "Chúc cạu gặp nhiều bệnh nhân zui",
+    "Thế giới cần tiếng cười của cạu",
+    "Chúc các bé yêu luôn được yêu thương!",
+    "Ngày 1/6 - ngày của những điều kỳ diệu!",
+  ];
+
+  const icons = [
+    "😄", "😂", "😜", "🤪", "😎", "😆", "😛", "🦄", "🐵", "🐶", "🐱",
+    "🌈", "🎉", "🎈", "✨", "🍭", "🍬", "🍩", "🍪", "🎁", "🎀", "👑",
+    "🌟", "💫", "🥳", "😺", "🤡", "🧸", "🤖", "👻", "👾", "🦖"
+  ];
+
+  const neonColors = [
+    '#FF3CAC', '#784BA0', '#2B86C5',
+    '#FF6F91', '#FFC75F', '#F9F871',
+    '#9AECDB', '#64DFDF', '#DE639A',
+    '#845EC2', '#FF9671', '#B39CD0',
+    '#00C9A7', '#FF4E50', '#F9D423'
+  ];
+
+  const container = document.querySelector('.container');
+
+  function randomColor() {
+    return neonColors[Math.floor(Math.random() * neonColors.length)];
+  }
+
+  function isSmallScreen() {
+    return window.innerWidth <= 480;
+  }
+
+  function createWish() {
+    const wish = document.createElement('div');
+    wish.className = 'wish';
+    wish.textContent = wishes[Math.floor(Math.random() * wishes.length)];
+    wish.style.color = randomColor();
+
+    if (isSmallScreen()) {
+      wish.style.left = '50%';
+      wish.classList.add('centered');
+    } else {
+      const x = Math.random() * (window.innerWidth - 120) + 60;
+      wish.style.left = `${x}px`;
+    }
+
+    wish.style.top = `${window.innerHeight + 20}px`;
+
+    // Tăng thời gian bay lên chậm hơn: 5-7 giây
+    const duration = 5000 + Math.random() * 2000;
+
+    let start = null;
+    const startTop = window.innerHeight + 20;
+    const endTop = -40;
+
+    function animate(timestamp) {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentTop = startTop + (endTop - startTop) * progress;
+      wish.style.top = `${currentTop}px`;
+
+      if (progress > 0.7) {
+        wish.style.opacity = 0.95 * (1 - (progress - 0.7) / 0.3);
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        wish.remove();
+      }
+    }
+
+    container.appendChild(wish);
+    requestAnimationFrame(animate);
+  }
+
+  function createIcon() {
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+    icon.style.color = randomColor();
+
+    const x = Math.random() * (window.innerWidth - 50) + 25;
+    icon.style.left = `${x}px`;
+    icon.style.top = `${window.innerHeight + 20}px`;
+
+    // Tăng thời gian bay icon chậm hơn: 4-6 giây
+    const duration = 4000 + Math.random() * 2000;
+
+    let start = null;
+    const startTop = window.innerHeight + 20;
+    const endTop = -50;
+
+    function animate(timestamp) {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentTop = startTop + (endTop - startTop) * progress;
+      icon.style.top = `${currentTop}px`;
+
+      if (progress > 0.7) {
+        icon.style.opacity = 0.9 * (1 - (progress - 0.7) / 0.3);
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        icon.remove();
+      }
+    }
+
+    container.appendChild(icon);
+    requestAnimationFrame(animate);
+  }
+
+  // Giảm tần suất tạo lời chúc: mỗi 400ms ~ 2.5 lời/giây
+  setInterval(createWish, 400);
+
+  // Icon vẫn tạo nhanh hơn chút: mỗi 120ms ~ 8 icon/giây
+  setInterval(createIcon, 120);
+</script>
+</body>
+</html>
